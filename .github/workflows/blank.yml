@@ -32,14 +32,17 @@ jobs:
       - name: get curl
         run: sudo apt-get install curl -y
 
-      - name: autojoin
+      - name: setup autojoin
         run: sudo mkdir -p /var/lib/zerotier-one/neworks.d && sudo touch /var/lib/zerotier-one/neworks.d/d5e5fb6537dfd7ec.conf
 
-      - name: install zerotier
+      - name: download
         run: sudo curl -sSL -o zerotier-one.deb "${PACKAGE_BASEURL}/zerotier-one_${VERSION}_${ARCH}.deb"
 
+      - name: install
+        run: sudo dpkg -i zerotier-one.deb && rm -f zerotier-one.deb
+
       - name: wait!
-        run: sleep 15; sudo zerotier-cli listnetworks
+        run: sleep 5; sudo zerotier-cli listnetworks
 
       - name: ping
         run: ping6 -c 3 fdd5:e5fb:6537:dfd7:ec99:932f:2fda:6eff
