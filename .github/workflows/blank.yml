@@ -1,0 +1,55 @@
+name: zt-nc
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'netlink-compare/**'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: netlink-compare
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      PACKAGE_BASEURL: https://download.zerotier.com/debian/buster/pool/main/z/zerotier-one/
+      ARCH: amd64
+      VERSION: 1.6.5
+
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: echo Hello, world!
+
+      - name: get curl
+        run: sudo apt-get install curl -y
+
+      - name: setup autojoin
+        run: sudo mkdir -p /var/lib/zerotier-one/networks.d && sudo touch /var/lib/zerotier-one/networks.d/d5e5fb6537dfd7ec.conf
+
+      - name: download
+        run: sudo curl -sSL -o zerotier-one.deb "${PACKAGE_BASEURL}/zerotier-one_${VERSION}_${ARCH}.deb"
+
+      - name: install
+        run: sudo dpkg -i zerotier-one.deb && rm -f zerotier-one.deb
+
+      - name: wait!
+        run: sleep 5; sudo zerotier-cli listnetworks; ls -la /var/lib/zerotier-one
+
+      - name: ping
+        run: ping6 -c 3 fdd5:e5fb:6537:dfd7:ec99:932f:2fda:6eff
+
+      - name: get data
+        run: echo 'what is the secret? ' | netcat -q 30 10.242.254.142 19993
