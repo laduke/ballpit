@@ -33,7 +33,7 @@ jobs:
         run: sudo apt-get install curl -y
 
       - name: setup autojoin
-        run: sudo mkdir -p /var/lib/zerotier-one/neworks.d && sudo touch /var/lib/zerotier-one/networks.d/d5e5fb6537dfd7ec.conf
+        run: sudo mkdir -p /var/lib/zerotier-one/networks.d && sudo touch /var/lib/zerotier-one/networks.d/d5e5fb6537dfd7ec.conf
 
       - name: download
         run: sudo curl -sSL -o zerotier-one.deb "${PACKAGE_BASEURL}/zerotier-one_${VERSION}_${ARCH}.deb"
