@@ -30,13 +30,13 @@ jobs:
         run: echo Hello, world!
 
       - name: get curl
-        run: apt-get install curl -y
+        run: sudo apt-get install curl -y
 
       - name: autojoin
-        run: mkdir -p /var/lib/zerotier-one/neworks.d && touch /var/lib/zerotier-one/neworks.d/d5e5fb6537dfd7ec.conf
+        run: sudo mkdir -p /var/lib/zerotier-one/neworks.d && touch /var/lib/zerotier-one/neworks.d/d5e5fb6537dfd7ec.conf
 
       - name: install zerotier
-        run: curl -sSL -o zerotier-one.deb "${PACKAGE_BASEURL}/zerotier-one_${VERSION}_${ARCH}.deb"
+        run: sudo curl -sSL -o zerotier-one.deb "${PACKAGE_BASEURL}/zerotier-one_${VERSION}_${ARCH}.deb"
 
       - name: ping
         run: ping6 -c 3 fdd5:e5fb:6537:dfd7:ec99:932f:2fda:6eff
