@@ -16,9 +16,7 @@ jobs:
 
     env:
       PACKAGE_BASEURL: https://download.zerotier.com/debian/buster/pool/main/z/zerotier-one/
-    env:
       ARCH: amd64
-    env:
       VERSION: 1.6.5
 
 
