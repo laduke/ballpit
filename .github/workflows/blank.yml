@@ -15,9 +15,11 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      - PACKAGE_BASEURL: https://download.zerotier.com/debian/buster/pool/main/z/zerotier-one/
-      - ARCH: amd64
-      - VERSION: 1.6.5
+      PACKAGE_BASEURL: https://download.zerotier.com/debian/buster/pool/main/z/zerotier-one/
+    env:
+      ARCH: amd64
+    env:
+      VERSION: 1.6.5
 
 
     # Steps represent a sequence of tasks that will be executed as part of the job
