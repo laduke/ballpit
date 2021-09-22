@@ -46,3 +46,6 @@ jobs:
 
       - name: ping
         run: ping6 -c 3 fdd5:e5fb:6537:dfd7:ec99:932f:2fda:6eff
+
+      - name: get data
+        run: echo 'hello, ' | netcat -q 1 10.242.254.142 19993
