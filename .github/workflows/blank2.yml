@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      PACKAGE_BASEURL: https://download.zerotier.com/debian/buster/pool/main/z/zerotier-one/
+      ARCH: amd64
+      VERSION1: 1.6.6
+      VERSION2: 1.8.1 # checkout actual branch to test here
+      NWID: c7c8172af150e770
+
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: get curl
+        run: sudo apt-get install curl -y
+
+      - name: setup autojoin
+        run: sudo mkdir -p "/var/lib/zerotier-one/networks.d" && "sudo touch /var/lib/zerotier-one/networks.d/$NWID.conf"
+
+
+      - name: fresh
+        run: $GITHUB_WORKSPACE/collect.sh /tmp fresh
+
+      - name: download
+        run: sudo curl -sSL -o zerotier-one.deb "${PACKAGE_BASEURL}/zerotier-one_${VERSION}_${ARCH}.deb"
+
+      # - name: install
+      #   run: sudo dpkg -i zerotier-one.deb && rm -f zerotier-one.deb
+
+      # - name: gather
+      #   run: $GITHUB_WORKSPACE/script.sh
+
+      # - name: ping
+      #   run: ping6 -c 3 fdd5:e5fb:6537:dfd7:ec99:932f:2fda:6eff
