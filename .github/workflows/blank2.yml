@@ -31,20 +31,17 @@ jobs:
       #   run: sudo apt-get install curl -y
 
       - name: setup autojoin
-        run: sudo mkdir -p /var/lib/zerotier-one/networks.d && ls /var/lib/zerotier-one/networks.d && sudo touch /var/lib/zerotier-one/networks.d/$NWID.conf
+        run: sudo mkdir -p /var/lib/zerotier-one/networks.d && sudo touch /var/lib/zerotier-one/networks.d/$NWID.conf
 
 
       - name: fresh
-        run: $GITHUB_WORKSPACE/collect.sh /tmp fresh
+        run: $GITHUB_WORKSPACE/collect.sh /tmp fresh && ls -l /tmp
 
-      - name: download
-        run: sudo curl -sSL -o zerotier-one.deb "${PACKAGE_BASEURL}/zerotier-one_${VERSION}_${ARCH}.deb"
+      - name: install
+        run: curl -sSL -o zerotier-one.deb "${PACKAGE_BASEURL}/zerotier-one_${VERSION}_${ARCH}.deb" && sudo dpkg -i zerotier-one.deb && rm -f zerotier-one.deb
 
-      # - name: install
-      #   run: sudo dpkg -i zerotier-one.deb && rm -f zerotier-one.deb
-
-      # - name: gather
-      #   run: $GITHUB_WORKSPACE/script.sh
+      - name: joined
+        run: sleep 5; $GITHUB_WORKSPACE/collect.sh /tmp joined && ls -l /tmp
 
       # - name: ping
       #   run: ping6 -c 3 fdd5:e5fb:6537:dfd7:ec99:932f:2fda:6eff
