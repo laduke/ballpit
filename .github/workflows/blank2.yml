@@ -31,7 +31,7 @@ jobs:
       #   run: sudo apt-get install curl -y
 
       - name: setup autojoin
-        run: mkdir -p /var/lib/zerotier-one/networks.d && touch /var/lib/zerotier-one/networks.d/$NWID.conf
+        run: sudo mkdir -p /var/lib/zerotier-one/networks.d && ls /var/lib/zerotier-one/networks.d && sudo touch /var/lib/zerotier-one/networks.d/$NWID.conf
 
 
       - name: fresh
