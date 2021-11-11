@@ -27,11 +27,11 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: get curl
-        run: sudo apt-get install curl -y
+      # - name: get curl
+      #   run: sudo apt-get install curl -y
 
       - name: setup autojoin
-        run: sudo mkdir -p "/var/lib/zerotier-one/networks.d" && "sudo touch /var/lib/zerotier-one/networks.d/$NWID.conf"
+        run: mkdir -p /var/lib/zerotier-one/networks.d && touch /var/lib/zerotier-one/networks.d/$NWID.conf
 
 
       - name: fresh
