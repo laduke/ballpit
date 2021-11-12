@@ -30,6 +30,7 @@ zerotier-cli info | grep ONLINE
 ## allow stuff
 zerotier-cli set $NWID allowGlobal=1 > /dev/null
 zerotier-cli set $NWID allowDefault=1 > /dev/null
+echo "hi"
 sleep 8;
 ./collect.sh step2 $OUT
 ! ./compare.sh $OUT step1 step2
@@ -37,17 +38,20 @@ sleep 8;
 ## disable stuff
 zerotier-cli set $NWID allowGlobal=0 > /dev/null
 zerotier-cli set $NWID allowDefault=0 > /dev/null
+echo "hi"
 sleep 8;
 ./collect.sh step3 $OUT
 
 ./compare.sh $OUT step1 step3
 
 zerotier-cli set $NWID allowManaged=0 > /dev/null
+echo "hi"
 sleep 8;
 ./collect.sh step4 $OUT
 ! ./compare.sh $OUT step3 step4
 
 zerotier-cli leave $NWID
+echo "hi"
 sleep 8;
 ./collect.sh step5 $OUT
 ./compare.sh $OUT step0 step5
