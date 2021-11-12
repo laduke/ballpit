@@ -15,10 +15,12 @@ touch /var/lib/zerotier-one/networks.d/$NWID.conf
 ./collect.sh step0 $OUT
 
 ## install current release
-curl -s https://install.zerotier.com | sudo bash
+curl -s https://install.zerotier.com | bash
+echo "here1"
 
 ## network status after joining
 sleep 10;
+echo "here2"
 zerotier-cli info | grep ONLINE
 ./collect.sh step1 $OUT
 ! ./compare.sh $OUT step0 step1
@@ -43,7 +45,7 @@ sleep 8;
 ./collect.sh step4 $OUT
 ! ./compare.sh $OUT step3 step4
 
-sudo zerotier-cli leave $NWID
+zerotier-cli leave $NWID
 sleep 8;
 ./collect.sh step5 $OUT
 ./compare.sh $OUT step0 step5
