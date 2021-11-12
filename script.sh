@@ -19,8 +19,10 @@ curl -s https://install.zerotier.com | bash
 echo "here1"
 
 ## network status after joining
-sleep 10;
-echo "here2"
+sleep 5;
+echo "hi"
+sleep 5;
+echo "hi"
 zerotier-cli info | grep ONLINE
 ./collect.sh step1 $OUT
 ! ./compare.sh $OUT step0 step1
