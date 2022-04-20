@@ -1,0 +1,26 @@
+{
+  "name": "tui",
+  "description": "description",
+  "version": "0.1.0",
+  "author": "Travis LaDuke <travisladuke@gmail.com>",
+  "license": "MIT",
+  "bin": "./bin.js",
+  "type": "module",
+  "scripts": {
+    "format": "standard --fix",
+    "build": "rollup bin.js -o dist/bin.js --format cjs && pkg ./dist/bin.js --out-path ./dist"
+  },
+  "devDependencies": {
+    "ava": "^4.2.0",
+    "c8": "^7.11.0",
+    "caxa": "^2.1.0",
+    "eslint-config-standard": "^16.0.3",
+    "pkg": "^5.6.0",
+    "rollup": "^2.70.2",
+    "standard": "*",
+    "testdouble": "^3.16.4"
+  },
+  "dependencies": {
+    "openapi-client-axios": "^5.1.2"
+  }
+}
