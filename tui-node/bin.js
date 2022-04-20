@@ -1,6 +1,3 @@
-console.log('hello 4')
-// add thing
-// add thing2
-// Added thing 3
-// fixed thing2
+console.log('hello 5')
 // deleted thing3
+// addd thing4
