@@ -7,6 +7,10 @@
   "bin": "./bin.js",
   "type": "module",
   "scripts": {
+    "test": "run-s test:*",
+    "test:deps": "dependency-check --no-dev ./package.json",
+    "test:standard": "standard",
+    "test:test": "c8 ava",
     "format": "standard --fix",
     "build": "rollup bin.js -o dist/bin.js --format cjs && pkg ./dist/bin.js --out-path ./dist"
   },
@@ -14,13 +18,13 @@
     "ava": "^4.2.0",
     "c8": "^7.11.0",
     "caxa": "^2.1.0",
+    "dependency-check": "^4.1.0",
     "eslint-config-standard": "^16.0.3",
+    "npm-run-all2": "^5.0.2",
     "pkg": "^5.6.0",
     "rollup": "^2.70.2",
     "standard": "*",
     "testdouble": "^3.16.4"
   },
-  "dependencies": {
-    "openapi-client-axios": "^5.1.2"
-  }
+  "dependencies": {}
 }
