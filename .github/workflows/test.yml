@@ -1,6 +1,14 @@
 name: tests
 
-on: [push]
+on:
+  push:
+    paths:
+      - 'tui-node/**'
+
+defaults:
+  run:
+    working-directory: tui-node
+
 
 jobs:
   test:
