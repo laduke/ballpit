@@ -5,6 +5,9 @@
     "type": "git",
     "url": "git+https://github.com/laduke/ballpit.git"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "version": "0.1.6",
   "author": "Travis LaDuke <travisladuke@gmail.com>",
   "license": "MIT",
