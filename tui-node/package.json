@@ -22,7 +22,7 @@
     "c8": "^7.11.0",
     "caxa": "^2.1.0",
     "dependency-check": "^4.1.0",
-    "eslint-config-standard": "^16.0.3",
+    "eslint-config-standard": "^17.0.0",
     "gh-release": "^6.0.4",
     "npm-run-all2": "^5.0.2",
     "pkg": "^5.6.0",
