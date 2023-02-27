@@ -34,7 +34,7 @@
     "gh-release": "^6.0.4",
     "npm-run-all2": "^5.0.2",
     "pkg": "^5.6.0",
-    "rollup": "^2.70.2",
+    "rollup": "^3.17.3",
     "standard": "*",
     "testdouble": "^3.16.4"
   }
