@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "async-folder-walker": "^2.2.1"
+  }
+}

@@ -1,0 +1,10 @@
+feth4823: flags=8843<UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST> metric 5000 mtu 2800
+	ether 46:51:75:70:57:cf 
+	inet6 fe80::4451:75ff:fe70:57cf%feth4823 prefixlen 64 scopeid 0x19 
+	inet 10.2.0.8 netmask 0xff000000 broadcast 255.255.255.240
+	inet6 fd9b:ee89:41b5:25b6:4499:93e7:50c5:1646 prefixlen 88 
+	inet6 2001:19f0:6001:d20:5401:d0:13ec:f5b0 prefixlen 80 
+	peer: feth9823
+	nd6 options=201<PERFORMNUD,DAD>
+	media: autoselect
+	status: active

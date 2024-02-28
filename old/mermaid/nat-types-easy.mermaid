@@ -1,0 +1,25 @@
+sequenceDiagram
+title Easy NAT. Each destination gets same mapping/port. 👍
+
+box rgb(255, 179, 84, 0.25) LAN
+participant Node1
+participant NAT
+end
+
+participant Root1
+participant Root2
+participant RootX
+
+
+Note left of Node1: Easy NAT<br/>Endpoint Independent NAT<br/>Cone Nat
+
+
+Node1 -) Root1: Hello, what port did my NAT map my 9993 to?
+Node1 -) Root2: Hello, what port did my NAT map my 9993 to?
+
+
+Root1 -) Node1: You are 1.2.3.4:10001
+Root2 -) Node1: You are 1.2.3.4:10001
+
+Root1 --) RootX: Please try to contact 1.2.3.4:10001
+RootX --) Node1: Hello, 1.2.3.4:10001?

@@ -1,0 +1,26 @@
+sequenceDiagram
+title "Strict" NAT. Same mappings, but blocky 👎
+
+box rgb(255, 179, 84, 0.25) LAN
+participant Node1
+participant NAT
+end
+
+participant Root1
+participant Root2
+participant RootX
+
+
+Note left of Node1: Hard NAT<br/>Endpoint Dependent NAT<br/>Symmetric
+
+Node1 -) Root1: Hello, what port did my NAT map my 9993 to?
+Node1 -) Root2: Hello, what port did my NAT map my 9993 to?
+
+
+Root1 -) Node1: You are 1.2.3.4:10001
+Root2 -) Node1: You are 1.2.3.4:10001
+
+Root1 --) RootX: Please try to contact 1.2.3.4:10001
+
+RootX --) NAT: Hello, 1.2.3.4:10001?
+Note over NAT, RootX: Blocked. I don't know you.

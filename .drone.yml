@@ -1,0 +1,15 @@
+kind: pipeline
+name: default
+
+steps:
+- name: docker
+  image: plugins/docker
+  settings:
+    username: kevinbacon
+    password: pa55word
+    repo: foo/bar
+    tags:
+    - latest
+    - main
+    ssh-agent-key:
+      from_secret: private_key

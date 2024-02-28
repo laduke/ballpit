@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../src/client.js"],
+  "sourcesContent": ["console.log(\"hello in browser\")\n"],
+  "mappings": ";AAAA,QAAQ,IAAI,kBAAkB;",
+  "names": []
+}

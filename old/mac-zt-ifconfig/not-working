@@ -1,0 +1,41 @@
+Routing tables
+
+Internet:
+Destination        Gateway            Flags           Netif Expire
+0/1                10.2.0.12          UGScg        feth4823       
+default            192.168.82.1       UGScg             en7       
+0/1                192.168.82.1       UGScIg      bridge100       
+default            link#17            UCSIg       bridge100      !
+default            link#19            UCSIg       bridge101      !
+10.2/28            link#25            UC           feth4823      !
+10.2.0.1           46:7a:a2:fd:a6:f6  UHLWIi       feth4823   1176
+10.2.0.2           link#25            UHLWI        feth4823      !
+10.2.0.12          link#25            UHRLWIir     feth4823     13
+10.2.0.15          ff:ff:ff:ff:ff:ff  UHLWbI       feth4823      !
+10.3/24            10.2.0.2           UGSc         feth4823       
+10.37.129/24       link#19            UC          bridge101      !
+10.37.129.255      ff.ff.ff.ff.ff.ff  UHLWbI      bridge101      !
+10.211.55/24       link#17            UC          bridge100      !
+10.211.55.255      ff.ff.ff.ff.ff.ff  UHLWbI      bridge100      !
+127                127.0.0.1          UCS               lo0       
+127.0.0.1          127.0.0.1          UH                lo0       
+128.0/1            10.2.0.12          UGSc         feth4823       
+128.0/1            192.168.82.1       UGScI       bridge100       
+169.254            link#14            UCS               en7      !
+192.168.82         link#14            UCS               en7      !
+192.168.82.1/32    link#14            UCS               en7      !
+192.168.82.1       0:e0:67:26:5b:13   UHLWIir           en7   1199
+192.168.82.3       9c:b6:54:4:55:7e   UHLWIi            en7   1192
+192.168.82.156     46:82:0:2a:4b:fd   UHLWI             en7   1024
+192.168.82.181     b6:77:27:1f:e7:68  UHLWIi            en7    884
+192.168.82.186     f6:a6:0:73:b4:8c   UHLWI             en7    274
+192.168.82.193/32  link#14            UCS               en7      !
+192.168.82.200     aa:41:3d:4a:71:10  UHLWI             en7    204
+192.168.82.203     dc:a6:32:25:34:34  UHLWI             en7   1193
+192.168.82.255     ff:ff:ff:ff:ff:ff  UHLWbI            en7      !
+224.0.0/4          link#14            UmCS              en7      !
+224.0.0.251        1:0:5e:0:0:fb      UHmLWI            en7       
+239.255.255.250    1:0:5e:7f:ff:fa    UHmLWI            en7       
+239.255.255.250    1:0:5e:7f:ff:fa    UHmLWIg     bridge101       
+255.255.255.255/32 link#14            UCS               en7      !
+255.255.255.255    ff:ff:ff:ff:ff:ff  UHLWbI            en7      !

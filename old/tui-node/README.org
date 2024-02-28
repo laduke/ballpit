@@ -1,0 +1,8 @@
+#+TITLE: Readme
+
+* TODO
+- [ ] tests, AVA. testdouble
+- [ ] pkg, gh action
+- [ ] ink
+- [ ] zerotier service openapi generate axios
+- [ ] ssh
