@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net"
@@ -12,7 +13,11 @@ import (
 )
 
 func main() {
-	rootDir := "testdata"
+
+	rootDir := os.Getenv("ROOT")
+	if rootDir == "" {
+		rootDir = "testdata"
+	}
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -20,6 +25,8 @@ func main() {
 	}
 
 	addr := "0.0.0.0:" + port
+
+	b := Browser{Root: rootDir}
 
 	mux := http.NewServeMux()
 
@@ -29,20 +36,35 @@ func main() {
 	})
 
 	mux.HandleFunc("GET /api/dir", func(w http.ResponseWriter, r *http.Request) {
+		// https://go.dev/blog/osroot
 		queryParams := r.URL.Query()
 
-		path := queryParams.Get("path")
+		userPath := queryParams.Get("path")
 
-		path = filepath.Join(rootDir, path)
-
-		res, err := List(path)
+		safePath, err := b.SafePath(userPath)
 		if err != nil {
-			panic(err)
+			JSONError(w, "Forbidden: "+userPath, http.StatusForbidden)
+			return
+		}
+
+		dirs, err := b.List(safePath)
+		if err != nil {
+			if errors.Is(err, ErrNotFound) {
+				JSONError(w, "Not Found: "+string(safePath), http.StatusNotFound)
+			} else {
+				JSONError(w, "Internal Error", http.StatusInternalServerError)
+			}
+			return
+		}
+
+		resp := DirResponse{
+			Data:   dirs,
+			Parent: filepath.Clean(string(safePath)),
 		}
 
 		w.Header().Set("Content-Type", "application/json")
 
-		json.NewEncoder(w).Encode(res)
+		json.NewEncoder(w).Encode(resp)
 	})
 
 	server := &http.Server{
@@ -65,22 +87,85 @@ func main() {
 	}
 }
 
-type Dir struct {
-	Name  string `json:"name"`
-	IsDir bool   `json:"isDir"`
+// API
+type DirResponse struct {
+	Data   []Dir  `json:"data"`
+	Parent string `json:"parent"`
 }
 
-func List(path string) ([]Dir, error) {
+func JSONError(w http.ResponseWriter, message string, statusCode int) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
 
-	res := []Dir{}
+	errResponse := ErrorResponse{Message: message, Code: statusCode}
+	json.NewEncoder(w).Encode(errResponse)
+}
 
-	entries, err := os.ReadDir(path)
-	if err != nil {
-		return nil, err
+type ErrorResponse struct {
+	Message string `json:"message"`
+	Code    int    `json:"code,omitempty"` // Optional: for specific error types
+}
+
+// MODEL
+
+var ErrNotFound = errors.New("Not Found")
+var ErrForbidden = errors.New("Forbidden")
+
+type StatType string
+
+const (
+	Directory StatType = "directory"
+	File      StatType = "file"
+)
+
+func (s StatType) String() string {
+	return string(s)
+}
+
+type Dir struct {
+	Type StatType `json:"type"`
+	Name string   `json:"name"`
+	ID   string   `json:"id"`
+}
+
+type Browser struct {
+	Root string
+}
+
+type SafePath string
+
+func (b Browser) SafePath(userPath string) (SafePath, error) {
+	// prevent traversal up past our root (?path="../../../etc")
+	if userPath != "" && !filepath.IsLocal(userPath) {
+		return "", ErrForbidden
 	}
 
+	userPath = filepath.Join(b.Root, userPath)
+	userPath = filepath.Clean(userPath)
+
+	var safePath SafePath = SafePath(userPath)
+	return safePath, nil
+}
+
+func (b Browser) List(safePath SafePath) ([]Dir, error) {
+	res := []Dir{}
+
+	var p string
+	p = string(safePath)
+
+	entries, err := os.ReadDir(p)
+	if err != nil {
+		return nil, ErrNotFound
+	}
+
+	statType := File
+
 	for _, e := range entries {
-		res = append(res, Dir{Name: e.Name(), IsDir: e.IsDir()})
+		if e.IsDir() {
+			statType = Directory
+		}
+		id := filepath.Join(b.Root, e.Name())
+		res = append(res, Dir{Name: e.Name(), Type: statType, ID: id})
 	}
 
 	return res, nil
