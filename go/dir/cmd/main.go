@@ -26,7 +26,9 @@ func main() {
 
 	addr := "0.0.0.0:" + port
 
-	b := Browser{Root: rootDir}
+	fileBrowser := DirService{Root: rootDir}
+
+	appHandler := NewHandler(&fileBrowser)
 
 	mux := http.NewServeMux()
 
@@ -35,37 +37,7 @@ func main() {
 		w.Write([]byte(`OK`))
 	})
 
-	mux.HandleFunc("GET /api/dir", func(w http.ResponseWriter, r *http.Request) {
-		// https://go.dev/blog/osroot
-		queryParams := r.URL.Query()
-
-		userPath := queryParams.Get("path")
-
-		safePath, err := b.SafePath(userPath)
-		if err != nil {
-			JSONError(w, "Forbidden: "+userPath, http.StatusForbidden)
-			return
-		}
-
-		dirs, err := b.List(safePath)
-		if err != nil {
-			if errors.Is(err, ErrNotFound) {
-				JSONError(w, "Not Found: "+string(safePath), http.StatusNotFound)
-			} else {
-				JSONError(w, "Internal Error", http.StatusInternalServerError)
-			}
-			return
-		}
-
-		resp := DirResponse{
-			Data:   dirs,
-			Parent: filepath.Clean(string(safePath)),
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-
-		json.NewEncoder(w).Encode(resp)
-	})
+	mux.HandleFunc("GET /api/dir", appHandler.BrowserHandler)
 
 	server := &http.Server{
 		Addr:         fmt.Sprintf(":%s", port),
@@ -85,6 +57,47 @@ func main() {
 	if err := server.Serve(listener); err != nil {
 		panic(err)
 	}
+}
+
+// HTTP
+
+type Handler struct {
+	browserService *DirService
+}
+
+func NewHandler(browserService *DirService) *Handler {
+	return &Handler{browserService}
+}
+
+func (h *Handler) BrowserHandler(w http.ResponseWriter, r *http.Request) {
+	queryParams := r.URL.Query()
+
+	userPath := queryParams.Get("path")
+
+	safePath, err := h.browserService.SafePath(userPath)
+	if err != nil {
+		JSONError(w, "Forbidden: "+userPath, http.StatusForbidden)
+		return
+	}
+
+	dirs, err := h.browserService.List(safePath)
+	if err != nil {
+		if errors.Is(err, ErrNotFound) {
+			JSONError(w, "Not Found: "+string(safePath), http.StatusNotFound)
+		} else {
+			JSONError(w, "Internal Error", http.StatusInternalServerError)
+		}
+		return
+	}
+
+	resp := DirResponse{
+		Data:   dirs,
+		Parent: filepath.Clean(string(safePath)),
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	json.NewEncoder(w).Encode(resp)
 }
 
 // API
@@ -128,13 +141,15 @@ type Dir struct {
 	ID   string   `json:"id"`
 }
 
-type Browser struct {
+// DirService
+type DirService struct {
 	Root string
 }
 
 type SafePath string
 
-func (b Browser) SafePath(userPath string) (SafePath, error) {
+func (b DirService) SafePath(userPath string) (SafePath, error) {
+	// https://go.dev/blog/osroot
 	// prevent traversal up past our root (?path="../../../etc")
 	if userPath != "" && !filepath.IsLocal(userPath) {
 		return "", ErrForbidden
@@ -147,7 +162,7 @@ func (b Browser) SafePath(userPath string) (SafePath, error) {
 	return safePath, nil
 }
 
-func (b Browser) List(safePath SafePath) ([]Dir, error) {
+func (b DirService) List(safePath SafePath) ([]Dir, error) {
 	res := []Dir{}
 
 	var p string
