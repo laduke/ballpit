@@ -5,8 +5,9 @@ import (
 	"testing"
 )
 
+var root = "testdata"
+
 func TestSafeDir(t *testing.T) {
-	root := "root"
 
 	var cases = []struct {
 		in      string
@@ -52,6 +53,27 @@ func TestSafeDir(t *testing.T) {
 			}
 
 		})
+	}
+
+}
+
+func TestList(t *testing.T) {
+	dirService := DirService{Root: root}
+
+	path, _ := dirService.SafePath("")
+	res, err := dirService.List(path)
+	if err != nil {
+		t.Errorf("Something went wrong %v", err)
+	}
+
+	if len(res) != 3 {
+		t.Errorf("Expected %v subdirectories, got %v. %v", 3, len(res), res)
+	}
+
+	path, _ = dirService.SafePath("asdf")
+	res, err = dirService.List(path)
+	if err == nil {
+		t.Errorf("Expected an error. Got %v", res)
 	}
 
 }
