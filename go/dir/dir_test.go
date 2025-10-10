@@ -6,6 +6,7 @@ import (
 )
 
 func TestSafeDir(t *testing.T) {
+	root := "root"
 
 	var cases = []struct {
 		in      string
@@ -21,17 +22,17 @@ func TestSafeDir(t *testing.T) {
 		},
 		{
 			in:      "a",
-			out:     "testdata/a",
+			out:     root + "/a",
 			isError: false,
 		},
 		{
 			in:      "",
-			out:     "testdata",
+			out:     root,
 			isError: false,
 		},
 	}
 
-	dirService := DirService{Root: "testdata"}
+	dirService := DirService{Root: root}
 
 	for _, tt := range cases {
 

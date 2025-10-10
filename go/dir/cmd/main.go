@@ -86,26 +86,28 @@ func (h *RouteHandler) DirList(w http.ResponseWriter, r *http.Request) {
 
 	dirs, err := h.browserService.List(safePath)
 	if err != nil {
-		if errors.Is(err, dir.ErrNotFound) {
-			h.logger.Info("Path not found", "path", string(safePath))
-			JSONError(w, "Not Found: "+string(safePath), http.StatusNotFound, h.logger)
-		} else {
-			h.logger.Error("Unknown Error", "path", string(safePath))
-			JSONError(w, "Internal Error", http.StatusInternalServerError, h.logger)
+
+		if errors.Is(err, os.ErrNotExist) {
+			h.logger.Debug("Not found", "path", safePath )
+			JSONError(w, "Not Found: "+safePath, http.StatusNotFound, h.logger)
+			return
 		}
+
+		h.logger.Info("Error listing directory", "path", safePath, "err", err)
+		JSONError(w, "Internal Error", http.StatusInternalServerError, h.logger)
 		return
 	}
 
 	resp := DirListResponse{
 		Data:   dirs,
-		Parent: string(safePath),
+		Parent: safePath,
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 
 	err = json.NewEncoder(w).Encode(resp)
 	if err != nil {
-		h.logger.Error("Error marshalling json", "path", string(safePath))
+		h.logger.Error("Error marshalling json", "path", safePath)
 	}
 }
 

@@ -6,3 +6,5 @@ tmp/
 node_modules
 dist
 /siteup-zt/public/*
+/go/dir/coverage.out
+/go/dir/_site/
