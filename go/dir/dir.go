@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 )
 
-var ErrNotFound = errors.New("Not Found")
-var ErrForbidden = errors.New("Forbidden")
+var ErrNotFound = errors.New("not found")
+var ErrForbidden = errors.New("forbidden")
 
 type StatType string
 
@@ -42,7 +42,7 @@ func (b DirService) SafePath(userPath string) (SafePath, error) {
 	userPath = filepath.Join(b.Root, userPath)
 	userPath = filepath.Clean(userPath)
 
-	var safePath SafePath = SafePath(userPath)
+	var safePath = SafePath(userPath)
 	return safePath, nil
 }
 

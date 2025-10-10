@@ -36,14 +36,15 @@ func main() {
 
 	routeHandler := NewRouteHandler(&dirService, logger)
 
-
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/dir", routeHandler.DirList)
 	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain")
-		w.Write([]byte(`OK`))
+		_, err := w.Write([]byte(`OK`))
+		if err != nil {
+			logger.Error("Error writing response")
+		}
 	})
-
 
 	listener, err := net.Listen("tcp", fmt.Sprintf("%s:%s", listenIp, port))
 	if err != nil {
@@ -79,7 +80,7 @@ func (h *RouteHandler) DirList(w http.ResponseWriter, r *http.Request) {
 	safePath, err := h.browserService.SafePath(userPath)
 	if err != nil {
 		h.logger.Warn("Forbidden path requested", "path", userPath)
-		JSONError(w, "Forbidden: "+userPath, http.StatusForbidden)
+		JSONError(w, "Forbidden: "+userPath, http.StatusForbidden, h.logger)
 		return
 	}
 
@@ -87,10 +88,10 @@ func (h *RouteHandler) DirList(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if errors.Is(err, dir.ErrNotFound) {
 			h.logger.Info("Path not found", "path", string(safePath))
-			JSONError(w, "Not Found: "+string(safePath), http.StatusNotFound)
+			JSONError(w, "Not Found: "+string(safePath), http.StatusNotFound, h.logger)
 		} else {
 			h.logger.Error("Unknown Error", "path", string(safePath))
-			JSONError(w, "Internal Error", http.StatusInternalServerError)
+			JSONError(w, "Internal Error", http.StatusInternalServerError, h.logger)
 		}
 		return
 	}
@@ -102,7 +103,10 @@ func (h *RouteHandler) DirList(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 
-	json.NewEncoder(w).Encode(resp)
+	err = json.NewEncoder(w).Encode(resp)
+	if err != nil {
+		h.logger.Error("Error marshalling json", "path", string(safePath))
+	}
 }
 
 // API RESPONSES
@@ -112,12 +116,15 @@ type DirListResponse struct {
 }
 
 // ERRORS
-func JSONError(w http.ResponseWriter, message string, statusCode int) {
+func JSONError(w http.ResponseWriter, message string, statusCode int, logger *slog.Logger) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 
 	errResponse := ErrorResponse{Message: message, Code: statusCode}
-	json.NewEncoder(w).Encode(errResponse)
+	err := json.NewEncoder(w).Encode(errResponse)
+	if err != nil {
+		logger.Error("Error marshalling json")
+	}
 }
 
 type ErrorResponse struct {
